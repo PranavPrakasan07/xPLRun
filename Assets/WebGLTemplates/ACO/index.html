@@ -2,16 +2,18 @@
 <html lang="en-us">
 
 <head>
+
   <meta charset="utf-8">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>ACO Run</title>
-  <link rel="shortcut icon" href="TemplateData/favicon.ico">
-  <link rel="icon" href="images/tick.svg">
-
+  <script src="TemplateData/UnityProgress.js"></script>
   <script src="Build/UnityLoader.js"></script>
   <script>
     var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Interface.json", { onProgress: UnityProgress });
   </script>
+
+  <title>ACO Run</title>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="icon" href="images/tick.svg">
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
@@ -153,11 +155,10 @@
 
   <div class="webgl-content">
     <div id="unityContainer" style="width: 960px; height: 600px"></div>
-  </div>
-
-  <div class="flex-container">
-    <div class="inputs"></div>
-    <div class="controls">
+    <div class="footer">
+      <div class="webgl-logo"></div>
+      <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+      <div class="title">ACO</div>
     </div>
   </div>
 
@@ -167,22 +168,22 @@
     </legend>
     <div class="arrow-container">
       <div class="arrow-button">
-        <img src="images/up.svg" width="50px">
+        <img src="TemplateData/up.svg" width="50px">
       </div>
       <div class="arrow-button">
-        <img src="images/down.svg" width="50px">
+        <img src="TemplateData/down.svg" width="50px">
       </div>
       <div class="arrow-button">
-        <img src="images/left.svg" width="50px">
+        <img src="TemplateData/left.svg" width="50px">
       </div>
       <div class="arrow-button">
-        <img src="images/right.svg" width="50px">
+        <img src="TemplateData/right.svg" width="50px">
       </div>
 
       <input placeholder="Obstacle No." type="text">
 
       <div class="set-button">
-        <img src="images/tick.svg" width="50px">
+        <img src="TemplateData/tick.svg" width="50px">
       </div>
 
     </div>
@@ -195,7 +196,7 @@
     <div class="arrow-container">
 
       <div class="set-button">
-        <img src="images/tick.svg" width="50px">
+        <img src="TemplateData/tick.svg" width="50px">
       </div>
 
     </div>
