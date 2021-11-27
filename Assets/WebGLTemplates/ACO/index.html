@@ -6,33 +6,111 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
   <title>ACO Run</title>
   <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="icon" href="images/tick.svg">
 
-  <!-- <script>
   <script src="Build/UnityLoader.js"></script>
-    UnityLoader.instantiate("unityContainer", "Build/Interface.json");
-  </script> -->
-
-  <!-- <link rel="text/css" href="./css/main.css"> -->
+  <script>
+    var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Interface.json", { onProgress: UnityProgress });
+  </script>
 
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    * {
+      box-sizing: border-box;
+      background-color: #1e1e1e;
+      font-family: 'Poppins', sans-serif;
+      color: white;
+    }
+
+    input:focus,
+    textarea:focus,
+    select:focus {
+      outline: none;
+    }
+
     html {
       scroll-behavior: smooth;
     }
+
+    /* width */
+    ::-webkit-scrollbar {
+      width: 10px;
+    }
+
+    /* Track */
+    ::-webkit-scrollbar-track {
+      background: #1F1F1F;
+    }
+
+    /* Handle */
+    ::-webkit-scrollbar-thumb {
+      background: #2E2E2E;
+      border-radius: 10px;
+    }
+
+    /* Handle on hover */
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3D3D3D;
+    }
+
 
     body {
       background-color: #1F1F1F;
     }
 
-    .container {
-      height: 100vh;
-      width: 100vw;
+    .arrow-container {
+      display: flex;
+      flex-wrap: wrap;
+      flex-direction: row;
+    }
+
+    .arrow-button {
+      margin: 8px;
+      cursor: pointer;
+    }
+
+    .arrow-button:hover {
+      opacity: 50%;
+    }
+
+    .set-button {
+      color: #1F1F1F;
+      margin: 8px;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    .set-button:hover {
+      opacity: 50%;
+    }
+
+    fieldset {
+      margin: 8px;
+      width: fit-content;
+      border-radius: 10px;
+      border-color: #2C2F33;
+      border-style: solid;
+    }
+
+    input {
+      color: #1F1F1F;
+      font-family: 'Poppins', sans-serif;
+      background-color: white;
+      font-size: 14px;
+      padding: 4px;
+      border-radius: 10px;
+      margin: 12px;
+      border: 0px;
     }
 
     .unityContainer {
       vertical-align: middle;
       width: 95vw;
+      height: 95vh;
       text-align: center;
       margin: 0 auto;
+      background-color: #1E1E1E;
       border-radius: 25px;
     }
 
@@ -43,12 +121,15 @@
 
     .inputs {
       flex: 75vw;
+      width: fit-content;
       background-color: aliceblue;
     }
 
     .controls {
       flex: 25vw;
+      width: fit-content;
       background-color: aliceblue;
+      margin: 16px;
     }
 
     @media (max-width: 800px) {
@@ -64,14 +145,61 @@
 
 <body>
 
-  <div class="unityContainer" id="unityContainer"></div>
+  <br>
+  <h2>Path Finding with ACO</h2>
+  <br>
+
+  <!-- <div class="unityContainer" id="unityContainer"></div> -->
+
+  <div class="webgl-content">
+    <div id="unityContainer" style="width: 960px; height: 600px"></div>
+  </div>
 
   <div class="flex-container">
     <div class="inputs"></div>
-    <div class="controls"></div>
+    <div class="controls">
+    </div>
   </div>
 
-  
+  <fieldset>
+    <legend>
+      Controls
+    </legend>
+    <div class="arrow-container">
+      <div class="arrow-button">
+        <img src="images/up.svg" width="50px">
+      </div>
+      <div class="arrow-button">
+        <img src="images/down.svg" width="50px">
+      </div>
+      <div class="arrow-button">
+        <img src="images/left.svg" width="50px">
+      </div>
+      <div class="arrow-button">
+        <img src="images/right.svg" width="50px">
+      </div>
+
+      <input placeholder="Obstacle No." type="text">
+
+      <div class="set-button">
+        <img src="images/tick.svg" width="50px">
+      </div>
+
+    </div>
+  </fieldset>
+
+  <fieldset>
+    <legend>
+      Simulate
+    </legend>
+    <div class="arrow-container">
+
+      <div class="set-button">
+        <img src="images/tick.svg" width="50px">
+      </div>
+
+    </div>
+  </fieldset>
 
 </body>
 

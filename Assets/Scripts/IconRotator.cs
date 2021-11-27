@@ -6,7 +6,7 @@ public class IconRotator : MonoBehaviour
 {
 
     public float xSpeed = 0.0f;
-    public float ySpeed = 0.4f;
+    public float ySpeed = 0.3f;
     public float zSpeed = 0.0f;
     public float ySpeedRotationOffset = 0.1f;
 
