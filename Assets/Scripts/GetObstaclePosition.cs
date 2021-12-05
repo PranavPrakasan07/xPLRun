@@ -2,29 +2,45 @@
 
 public class GetObstaclePosition : MonoBehaviour
 {
-    float[,] obstaclePos = new float[7, 2];
-    int numberOfObstacles = 7;
+    const int numberOfObstacles = 7;
+    float[,] obstaclePos = new float[numberOfObstacles + 2, 2];
 
     public void GetPosition()
     {
-        for (int i = 0; i < numberOfObstacles; i++)
+        GameObject player = GameObject.Find("Character");
+        Transform playerTransform = player.transform;
+
+        // get player position
+        Vector3 playerPosition = playerTransform.position;
+
+        //Player start
+        obstaclePos[0, 0] = (float)decimal.Parse(playerPosition.x.ToString("0.00"));
+        obstaclePos[0, 1] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
+
+        //Player end
+        obstaclePos[numberOfObstacles, 0] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
+        obstaclePos[numberOfObstacles, 1] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
+
+        for (int i = 1; i < numberOfObstacles + 1; i++)
         {
-            GameObject player = GameObject.Find("Cube" + i);
-            Transform playerTransform = player.transform;
 
-            // get player position
-            Vector3 position = playerTransform.position;
+            GameObject obstacle = GameObject.Find("Cube" + i);
+            Transform obstacleTransform = obstacle.transform;
 
-            
-            obstaclePos[i, 0] = (float)decimal.Parse(position.x.ToString("0.00"));
-            obstaclePos[i, 1] = (float)decimal.Parse(position.z.ToString("0.00"));
+            // get obstacle position
+            Vector3 obstaclePosition = obstacleTransform.position;
+
+
+            obstaclePos[i, 0] = (float)decimal.Parse(obstaclePosition.x.ToString("0.00"));
+            obstaclePos[i, 1] = (float)decimal.Parse(obstaclePosition.z.ToString("0.00"));
 
         }
 
-        for (int i = 0; i < numberOfObstacles; i++)
+
+        for (int i = 0; i < numberOfObstacles + 1; i++)
         {
-            Debug.Log("position of '" + obstaclePos[i, 0]);
-            Debug.Log("position of '" + obstaclePos[i, 1]);
+            Debug.Log("position of '" + i + ":" + obstaclePos[i, 0]);
+            Debug.Log("position of '" + i + ":" + obstaclePos[i, 1]);
         }
 
     }
