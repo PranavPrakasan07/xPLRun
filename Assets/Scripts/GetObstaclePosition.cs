@@ -42,7 +42,6 @@ public class GetObstaclePosition : MonoBehaviour
             // get obstacle position
             Vector3 obstaclePosition = obstacleTransform.position;
 
-
             obstaclePos[i, 0] = (float)decimal.Parse(obstaclePosition.x.ToString("0.00"));
             obstaclePos[i, 1] = (float)decimal.Parse(obstaclePosition.z.ToString("0.00"));
 
@@ -63,7 +62,7 @@ public class GetObstaclePosition : MonoBehaviour
     void Start()
     {
 
-        HelloString("This is a string.");
+        //HelloString("This is a string.");
 
         //float[] myArray = new float[10];
         //PrintFloatArray(myArray, myArray.Length);
