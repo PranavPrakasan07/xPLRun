@@ -1,9 +1,20 @@
-﻿using UnityEngine;
+﻿using System.Runtime.InteropServices;
+using UnityEngine;
 
 public class GetObstaclePosition : MonoBehaviour
 {
     const int numberOfObstacles = 7;
     float[,] obstaclePos = new float[numberOfObstacles + 2, 2];
+    public string posString = "";
+
+    [DllImport("__Internal")]
+    private static extern void Hello();
+
+    [DllImport("__Internal")]
+    private static extern void HelloString(string str);
+
+    [DllImport("__Internal")]
+    private static extern void GetPos(string posString);
 
     public void GetPosition()
     {
@@ -23,6 +34,7 @@ public class GetObstaclePosition : MonoBehaviour
 
         for (int i = 1; i < numberOfObstacles + 1; i++)
         {
+            posString = "";
 
             GameObject obstacle = GameObject.Find("Cube" + i);
             Transform obstacleTransform = obstacle.transform;
@@ -41,18 +53,25 @@ public class GetObstaclePosition : MonoBehaviour
         {
             Debug.Log("position of '" + i + ":" + obstaclePos[i, 0]);
             Debug.Log("position of '" + i + ":" + obstaclePos[i, 1]);
+            posString += "position of '" + i + ":" + obstaclePos[i, 0] + "\n" + "position of '" + i + ":" + obstaclePos[i, 1];
         }
 
+        GetPos(posString);
     }
 
-    void CreateArrayWithPos(float x, float z)
+
+    void Start()
     {
-        float[] xzPos = { x, z };
 
+        HelloString("This is a string.");
 
+        //float[] myArray = new float[10];
+        //PrintFloatArray(myArray, myArray.Length);
 
+        //int result = AddNumbers(5, 7);
+        //Debug.Log(result);
 
-
+        //Debug.Log(StringReturnValueFunction());
 
     }
 }
