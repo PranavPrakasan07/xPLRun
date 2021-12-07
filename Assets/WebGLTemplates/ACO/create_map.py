@@ -1,12 +1,9 @@
 import json
 
 """
-
 Room : 16 x 16
 
 0-16, 0-16
-
-
 
 """
 
@@ -19,6 +16,11 @@ def create_map(posString='{ "start":[0,0], "1": [4,4], "2": [2,5], "3": [3,5], "
         print("The original string : " + str(obstacleDictionaryString))
 
         obstacleDictionary = json.loads(obstacleDictionaryString)
+
+        for entry in obstacleDictionary.keys():
+            lupdated = list(map(round, obstacleDictionary.get(entry)))
+            obstacleDictionary[entry] = lupdated
+
 
         # print result
         print("The converted dictionary : " + str(obstacleDictionary))
@@ -65,11 +67,7 @@ def create_map(posString='{ "start":[0,0], "1": [4,4], "2": [2,5], "3": [3,5], "
     print("Updated:")
     print("".join(fileList))
 
-    f = open("maps/newmap.txt", "w")
+    f = open("maps/currentmap.txt", "w")
     f.write("".join(fileList))
 
     f.close()
-
-
-# if __name__ == '__main__':
-#     create_map()

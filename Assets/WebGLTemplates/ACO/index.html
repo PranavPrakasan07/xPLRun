@@ -3,149 +3,155 @@
 
 <head>
 
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <script src="TemplateData/UnityProgress.js"></script>
-  <script src="Build/UnityLoader.js"></script>
-  <script>
-    var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Interface.json", { onProgress: UnityProgress });
-  </script>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+        var unityInstance = UnityLoader.instantiate("unityContainer", "Build/Interface.json", { onProgress: UnityProgress });
+    </script>
 
-  <title>ACO Run</title>
-  <link rel="shortcut icon" href="TemplateData/favicon.ico">
-  <link rel="icon" href="images/tick.svg">
+    <title>ACO Run</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="icon" href="images/tick.svg">
 
-  <style>
-    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython.min.js">
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/brython@3/brython_stdlib.js">
+    </script>
+    <script src="/brython.js"></script>
 
-    * {
-      box-sizing: border-box;
-      background-color: #1e1e1e;
-      font-family: 'Poppins', sans-serif;
-      color: white;
-    }
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-    input:focus,
-    textarea:focus,
-    select:focus {
-      outline: none;
-    }
+        * {
+            box-sizing: border-box;
+            background-color: #1e1e1e;
+            font-family: 'Poppins', sans-serif;
+            color: white;
+        }
 
-    html {
-      scroll-behavior: smooth;
-    }
+        input:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+        }
 
-    /* width */
-    ::-webkit-scrollbar {
-      width: 10px;
-    }
+        html {
+            scroll-behavior: smooth;
+        }
 
-    /* Track */
-    ::-webkit-scrollbar-track {
-      background: #1F1F1F;
-    }
+        /* width */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
 
-    /* Handle */
-    ::-webkit-scrollbar-thumb {
-      background: #2E2E2E;
-      border-radius: 10px;
-    }
+        /* Track */
+        ::-webkit-scrollbar-track {
+            background: #1F1F1F;
+        }
 
-    /* Handle on hover */
-    ::-webkit-scrollbar-thumb:hover {
-      background: #3D3D3D;
-    }
+        /* Handle */
+        ::-webkit-scrollbar-thumb {
+            background: #2E2E2E;
+            border-radius: 10px;
+        }
+
+            /* Handle on hover */
+            ::-webkit-scrollbar-thumb:hover {
+                background: #3D3D3D;
+            }
 
 
-    body {
-      background-color: #1F1F1F;
-    }
+        body {
+            background-color: #1F1F1F;
+        }
 
-    .arrow-container {
-      display: flex;
-      flex-wrap: wrap;
-      flex-direction: row;
-    }
+        .arrow-container {
+            display: flex;
+            flex-wrap: wrap;
+            flex-direction: row;
+        }
 
-    .arrow-button {
-      margin: 8px;
-      cursor: pointer;
-    }
+        .arrow-button {
+            margin: 8px;
+            cursor: pointer;
+        }
 
-    .arrow-button:hover {
-      opacity: 50%;
-    }
+            .arrow-button:hover {
+                opacity: 50%;
+            }
 
-    .set-button {
-      color: #F1F1F1;
-      margin: 8px;
-      border-radius: 10px;
-      cursor: pointer;
-    }
+        .set-button {
+            color: #F1F1F1;
+            margin: 8px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
 
-    .set-button:hover {
-      opacity: 50%;
-    }
+            .set-button:hover {
+                opacity: 50%;
+            }
 
-    fieldset {
-      margin: 8px;
-      width: fit-content;
-      border-radius: 10px;
-      border-color: #2C2F33;
-      border-style: solid;
-    }
+        fieldset {
+            margin: 8px;
+            width: fit-content;
+            border-radius: 10px;
+            border-color: #2C2F33;
+            border-style: solid;
+        }
 
-    input {
-      color: #1F1F1F;
-      font-family: 'Poppins', sans-serif;
-      background-color: white;
-      font-size: 14px;
-      padding: 4px;
-      border-radius: 10px;
-      margin: 12px;
-      border: 0px;
-    }
+        input {
+            color: #1F1F1F;
+            font-family: 'Poppins', sans-serif;
+            background-color: white;
+            font-size: 14px;
+            padding: 4px;
+            border-radius: 10px;
+            margin: 12px;
+            border: 0px;
+        }
 
-    .unityContainer {
-      vertical-align: middle;
-      width: 95vw;
-      height: 95vh;
-      text-align: center;
-      margin: 0 auto;
-      background-color: #1E1E1E;
-      border-radius: 25px;
-    }
+        .unityContainer {
+            vertical-align: middle;
+            width: 95vw;
+            height: 95vh;
+            text-align: center;
+            margin: 0 auto;
+            background-color: #1E1E1E;
+            border-radius: 25px;
+        }
 
-    .flex-container {
-      display: flex;
-      flex-wrap: wrap;
-    }
+        .flex-container {
+            display: flex;
+            flex-wrap: wrap;
+        }
 
-    .inputs {
-      flex: 75vw;
-      width: fit-content;
-      background-color: aliceblue;
-    }
+        .inputs {
+            flex: 75vw;
+            width: fit-content;
+            background-color: aliceblue;
+        }
 
-    .controls {
-      flex: 25vw;
-      width: fit-content;
-      background-color: aliceblue;
-      margin: 16px;
-    }
+        .controls {
+            flex: 25vw;
+            width: fit-content;
+            background-color: aliceblue;
+            margin: 16px;
+        }
 
-    @media (max-width: 800px) {
+        @media (max-width: 800px) {
 
-      .inputs,
-      .controls {
-        flex: 100%;
-      }
-    }
-  </style>
+            .inputs,
+            .controls {
+                flex: 100%;
+            }
+        }
+    </style>
 
 </head>
 
-<body>
+<body onload="brython()">
 
     <br>
     <h2>Path Finding with ACO</h2>
@@ -244,7 +250,7 @@
         </legend>
 
         <div class="arrow-container">
-            <div class="set-button" onclick="setFinishPoint()">Get Path</div>
+            <div class="set-button" id="getpath" onclick="setFinishPoint()">Get Path</div>
         </div>
     </fieldset>
 
@@ -261,6 +267,36 @@
 
             alert(positionString);
         }
+    </script>
+
+
+    <script type="text/python">
+
+        from browser import document
+        from create_map import create_map
+        #from aco import Map
+        #from aco import AntColony
+
+        def aco_call():
+            no_of_ants, iterations, map_path, evap_rate, pher = 10, 10, "newmap.txt", 0.5, 1
+            Map= Map(map_path)
+            Colony = AntColony(Map, no_of_ants, iterations, evap_rate, pher)
+            path = Colony.calculate_path()
+            print(path)
+
+        def getMap(ev):
+            data = document["elements"].text
+            print(data)
+
+            #create_map(data)
+
+        document["getpath"].bind('click', getMap)
+
+        data = document["elements"].text
+        print("Printed from script!", data)
+
+        #create_map(data)
+
     </script>
 
 </body>
