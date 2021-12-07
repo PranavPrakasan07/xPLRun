@@ -1,10 +1,11 @@
 ﻿using System.Runtime.InteropServices;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class GetObstaclePosition : MonoBehaviour
 {
     const int numberOfObstacles = 7;
-    float[,] obstaclePos = new float[numberOfObstacles + 2, 2];
+    float[,] obstaclePos = new float[numberOfObstacles + 1, 2];
     public string posString = "";
 
     [DllImport("__Internal")]
@@ -29,10 +30,10 @@ public class GetObstaclePosition : MonoBehaviour
         obstaclePos[0, 1] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
 
         //Player end
-        obstaclePos[numberOfObstacles, 0] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
-        obstaclePos[numberOfObstacles, 1] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
+        //obstaclePos[numberOfObstacles, 0] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
+        //obstaclePos[numberOfObstacles, 1] = (float)decimal.Parse(playerPosition.z.ToString("0.00"));
 
-        for (int i = 1; i < numberOfObstacles + 1; i++)
+        for (int i = 1; i < numberOfObstacles+1; i++)
         {
             posString = "";
 
@@ -52,7 +53,7 @@ public class GetObstaclePosition : MonoBehaviour
         {
             Debug.Log("position of '" + i + ":" + obstaclePos[i, 0]);
             Debug.Log("position of '" + i + ":" + obstaclePos[i, 1]);
-            posString += "position of '" + i + ":" + obstaclePos[i, 0] + "\n" + "position of '" + i + ":" + obstaclePos[i, 1];
+            posString += i + "," + obstaclePos[i, 0] + ":" + i + ":" + obstaclePos[i, 1];
         }
 
         GetPos(posString);

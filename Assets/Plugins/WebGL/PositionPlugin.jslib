@@ -12,6 +12,10 @@ var PositionPlugin = {
     {
         window.alert(Pointer_stringify(posString));
         document.getElementById("obstacles").innerHTML = Pointer_stringify(posString);
+    },
+    SetFinishPoint: function(finishPoint)
+    {
+        document.getElementById("finish").innerHTML = Pointer_stringify(finishPoint);
     }
 };
 
