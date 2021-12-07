@@ -147,91 +147,108 @@
 
 <body>
 
-	<br>
-	<h2>Path Finding with ACO</h2>
-	<br>
+    <br>
+    <h2>Path Finding with ACO</h2>
+    <br>
 
-	<!-- <div class="unityContainer" id="unityContainer"></div> -->
+    <!-- <div class="unityContainer" id="unityContainer"></div> -->
 
-	<div class="webgl-content">
-		<div id="unityContainer" style="width: 960px; height: 600px"></div>
-		<div class="footer">
-			<div class="webgl-logo"></div>
-			<div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-			<div class="title">ACO</div>
-		</div>
-	</div>
+    <div class="webgl-content">
+        <div id="unityContainer" style="width: 960px; height: 600px"></div>
+        <div class="footer">
+            <div class="webgl-logo"></div>
+            <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+            <div class="title"></div>
+        </div>
+    </div>
 
-	<fieldset>
-		<legend>
-			Controls
-		</legend>
-		<div class="arrow-container">
-			<div class="arrow-button">
-				<img src="up.svg" width="50">
-			</div>
-			<div class="arrow-button">
-				<img src="down.svg" width="50">
-			</div>
-			<div class="arrow-button">
-				<img src="left.svg" width="50">
-			</div>
-			<div class="arrow-button">
-				<img src="right.svg" width="50">
-			</div>
+    <!--<fieldset>
+        <legend>
+            Controls
+        </legend>
+        <div class="arrow-container">
+            <div class="arrow-button">
+                <img src="up.svg" width="50">
+            </div>
+            <div class="arrow-button">
+                <img src="down.svg" width="50">
+            </div>
+            <div class="arrow-button">
+                <img src="left.svg" width="50">
+            </div>
+            <div class="arrow-button">
+                <img src="right.svg" width="50">
+            </div>
 
-			<input placeholder="Obstacle No." id="finish_point" type="text">
+            <input placeholder="Obstacle No." id="finish_point" type="text">
 
-			<div class="set-button" onclick="setFinishPoint()">
-				Set
-			</div>
+            <div class="set-button" onclick="setFinishPoint()">
+                Set
+            </div>
 
-		</div>
-	</fieldset>
+        </div>
+    </fieldset>
 
-	<fieldset>
-		<legend>
-			Simulate
-		</legend>
-		<div class="arrow-container">
+    <fieldset>
+        <legend>
+            Simulate
+        </legend>
+        <div class="arrow-container">
 
-			<div class="set-button">
-				<img src="tick.svg" width="50">
-			</div>
+            <div class="set-button">
+                <img src="tick.svg" width="50">
+            </div>
 
-		</div>
-	</fieldset>
+        </div>
+    </fieldset>-->
 
-	<fieldset>
-		<legend>
-			Obstacles
-		</legend>
-		<div class="arrow-container">
+    <fieldset>
+        <legend>
+            Elements
+        </legend>
 
-			<div id="obstacles" class="set-button">
-			</div>
-</div>
+        <div class="arrow-container">
 
-	</fieldset>
-	<div id="finish" class="set-button">
+            <div id="obstacles" class="set-button">
+            </div>
+        </div>
 
-	</div>
-	<script>
+    </fieldset>
 
-		function setFinishPoint() {
+    <fieldset>
+        <legend>
+            Finish Point
+        </legend>
 
-			var finishPoint = document.getElementById("finish_point").value;
-			console.log("Finish point from js:" + finishPoint);
+        <div class="arrow-container">
+            <div id="finish" class="set-button"></div>
+        </div>
+    </fieldset>
 
-			var positionString = document.getElementById("obstacles").textContent + ":" + finishPoint;
-			console.log("Position from js:" + positionString);
+    <fieldset>
+        <legend>
+            Path
+        </legend>
 
-			//stored in x,y:x,y format
-			const positionArray = positionString.split(":");
+        <div class="arrow-container">
+            <div class="set-button" onclick="setFinishPoint()">Get Path</div>
+        </div>
+    </fieldset>
 
-			alert(positionArray.toString());
-		}
-	</script>
+    <script>
+
+        function setFinishPoint() {
+
+            var finishPoint = document.getElementById("finish").textContent;
+
+			var positionString = document.getElementById("obstacles").textContent + "\"end\":[" + finishPoint + "]}";
+            console.log("Position from js:" + positionString);
+
+			document.getElementById("obstacles").textContent = positionString;
+			
+            alert(positionString);
+        }
+    </script>
 
 </body>
 

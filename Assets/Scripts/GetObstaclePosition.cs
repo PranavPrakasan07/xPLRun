@@ -49,14 +49,16 @@ public class GetObstaclePosition : MonoBehaviour
         }
 
 
-        for (int i = 0; i < numberOfObstacles + 1; i++)
+        for (int i = 1; i < numberOfObstacles + 1; i++)
         {
             Debug.Log("position of '" + i + ":" + obstaclePos[i, 0]);
             Debug.Log("position of '" + i + ":" + obstaclePos[i, 1]);
-            posString += i + "," + obstaclePos[i, 0] + ":" + i + ":" + obstaclePos[i, 1];
+            posString += " \"" + i + "\": [" + obstaclePos[i, 0] + ","  + obstaclePos[i, 1] + "],";
         }
 
-        GetPos(posString);
+        var posDictionary = "{ \"start\":[" + obstaclePos[0, 0] + "," + obstaclePos[0, 1] + "]," + posString;
+
+        GetPos(posDictionary);
     }
 
 
