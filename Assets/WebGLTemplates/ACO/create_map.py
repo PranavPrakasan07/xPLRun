@@ -71,5 +71,5 @@ def create_map(posString='{ "start":[0,0], "1": [4,4], "2": [2,5], "3": [3,5], "
     f.close()
 
 
-if __name__ == '__main__':
-    create_map()
+# if __name__ == '__main__':
+#     create_map()
