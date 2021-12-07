@@ -204,12 +204,25 @@
 
     <fieldset>
         <legend>
-            Elements
+            Obstacles
         </legend>
 
         <div class="arrow-container">
 
             <div id="obstacles" class="set-button">
+            </div>
+        </div>
+
+    </fieldset>
+
+    <fieldset>
+        <legend>
+            Elements
+        </legend>
+
+        <div class="arrow-container">
+
+            <div id="elements" class="set-button">
             </div>
         </div>
 
@@ -241,11 +254,11 @@
 
             var finishPoint = document.getElementById("finish").textContent;
 
-			var positionString = document.getElementById("obstacles").textContent + "\"end\":[" + finishPoint + "]}";
+            var positionString = document.getElementById("obstacles").textContent + "\"end\":[" + finishPoint + "]}";
             console.log("Position from js:" + positionString);
 
-			document.getElementById("obstacles").textContent = positionString;
-			
+            document.getElementById("elements").textContent = positionString;
+
             alert(positionString);
         }
     </script>
