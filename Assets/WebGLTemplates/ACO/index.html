@@ -149,6 +149,434 @@
         }
     </style>
 
+    <script src="https://pyodide-cdn2.iodide.io/v0.15.0/full/pyodide.js"></script>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.18.1/full/pyodide.js"></script>
+
+
+    <script type="text/javascript">
+        // // init environment
+        // languagePluginLoader
+        //     // then run Python code
+        //     .then(() => console.log(pyodide.runPython(`import sys; sys.version`)));
+
+
+
+
+        async function main() {
+            let pyodide = await loadPyodide({ indexURL: "https://cdn.jsdelivr.net/pyodide/v0.18.1/full/" });
+            await pyodide.loadPackage("micropip");
+            pyodide.runPython(`
+                    import js
+
+                    def parse_text(text):
+                        js.document.getElementById("output_text").value = text[::-1]
+                `);
+
+            // pyodide.loadPackage('numpy').then(() => {
+            //     // numpy is now available
+            //     python_code =
+            //     `
+            //     from create_map import create_map
+            //     create_map('{ "start":[0.5,2.97], "1": [0,7], "2": [5,15], "3": [10,9], "4": [3,10], "5": [4,3], "6": [11,12], "7": [11,3],"end":[5,5]}')
+            //     `
+            //     pyodide.runPython(python_code)
+            //     console.log(pyodide.runPython(python_code))
+            // })
+
+            pyodide.loadPackage(['numpy', 'matplotlib']).then(() => {
+                // numpy is now available
+                python_code =
+                    `
+import js
+import numpy as np
+import matplotlib.pyplot as plt
+import json
+import io, base64
+
+class Map:
+        ''' Class used for handling the
+            information provided by the
+            input map '''
+        class Nodes:
+            ''' Class for representing the nodes
+                used by the ACO algorithm '''
+            def __init__(self, row, col, in_map,spec):
+                self.node_pos= (row, col)
+                self.edges = self.compute_edges(in_map)
+                self.spec = spec
+
+            def compute_edges(self,map_arr):
+                ''' class that returns the edges
+                    connected to each node '''
+                imax = map_arr.shape[0]
+                jmax = map_arr.shape[1]
+                edges = []
+                if map_arr[self.node_pos[0]][self.node_pos[1]] == 1:
+                    for dj in [-1,0,1]:
+                        for di in [-1,0,1]:
+                            newi = self.node_pos[0]+ di
+                            newj = self.node_pos[1]+ dj
+                            if ( dj == 0 and di == 0):
+                                continue
+                            if (newj>=0 and newj<jmax and newi >=0 and newi<imax):
+                                if map_arr[newi][newj] == 1:
+                                    edges.append({'FinalNode':(newi,newj),
+                                                  'Pheromone': 1.0, 'Probability':
+                                                 0.0})
+                return edges
+
+        def __init__(self, map_name):
+            self.in_map = self._read_map(map_name)
+            self.occupancy_map = self._map_2_occupancy_map()
+
+            self.initial_node = \
+            (int(np.where(self.in_map == 'S')[0]), int(np.where(self.in_map == 'S')[1]))
+
+            # print("WHERE:", (int(np.where(self.in_map == 'S')[0]), int(np.where(self.in_map == 'S')[1])))
+            # print("WHERE:", (int(np.where(self.in_map == 'S')[0]), int(np.where(self.in_map == 'S')[1])))
+
+            self.final_node= (int(np.where(self.in_map ==
+                                          'F')[0]),int(np.where(self.in_map ==
+                                                                'F')[1]))
+            self.nodes_array = self._create_nodes()
+
+        def _create_nodes(self):
+            ''' Create nodes out of the initial map '''
+            return [[self.Nodes(i,j,self.occupancy_map,self.in_map[i][j]) for j in
+                     range(self.in_map.shape[0])] for i in range(self.in_map.shape[0])]
+
+        def _read_map(self, map_name):
+            ''' Reads data from an input map txt file'''
+            map_planning = np.loadtxt('' + map_name, dtype = 'str')
+            return map_planning
+
+        def _map_2_occupancy_map(self):
+            ''' Takes the matrix and converts it into a binary output array '''
+            map_arr = np.copy(self.in_map)
+            # print("map_arr : ", map_arr)
+            map_arr[map_arr == 'O'] = 0
+            map_arr[map_arr == 'E'] = 1
+            map_arr[map_arr == 'S'] = 1
+            map_arr[map_arr == 'F'] = 1
+
+            # print("map_arr : ", map_arr)
+            # print("map_arr : ", map_arr.astype(np.int))
+
+            return map_arr.astype(np.int)
+
+        def represent_map(self):
+            ''' Represents the map '''
+            # Map representation
+            plt.plot(self.initial_node[1],self.initial_node[0], 'bv', markersize=10)
+            plt.plot(self.final_node[1],self.final_node[0], 'g^', markersize=10)
+            plt.imshow(self.occupancy_map, cmap='Wistia', interpolation = 'nearest')
+            plt.show()
+            plt.close()
+
+        def represent_path(self, path):
+            ''' Represents the path in the map '''
+            x = []
+            y = []
+            for p in path:
+                x.append(p[1])
+                y.append(p[0])
+            plt.plot(x,y)
+            # create buffer for an image
+            buf = io.BytesIO()
+            # copy the plot into the buffer
+            plt.savefig(buf, format='png')
+            buf.seek(0)
+            # encode the image as Base64 string
+            img_str = 'data:image/png;base64,' + base64.b64encode(buf.read()).decode('UTF-8')
+            # show the image
+            img_tag = js.document.getElementById('fig')
+            img_tag.src = img_str
+            buf.close()
+            self.represent_map()
+
+
+class AntColony:
+        ''' Class used for handling
+            the behaviour of the whole
+            ant colony '''
+        class Ant:
+            ''' Class used for handling
+                the ant's
+                individual behaviour '''
+            def __init__(self, start_node_pos, final_node_pos):
+                self.start_pos = start_node_pos
+                self.actual_node= start_node_pos
+                self.final_node = final_node_pos
+                self.visited_nodes = []
+                self.final_node_reached = False
+                self.remember_visited_node(start_node_pos)
+
+            def move_ant(self, node_to_visit):
+                ''' Moves ant to the selected node '''
+                self.actual_node = node_to_visit
+                self.remember_visited_node(node_to_visit)
+
+            def remember_visited_node(self, node_pos):
+                ''' Appends the visited node to
+                    the list of visited nodes '''
+                self.visited_nodes.append(node_pos)
+
+            def get_visited_nodes(self):
+                ''' Returns the list of
+                    visited nodes '''
+                return self.visited_nodes
+
+            def is_final_node_reached(self):
+                ''' Checks if the ant has reached the
+                    final destination '''
+                if self.actual_node == self.final_node :
+                    self.final_node_reached = True
+
+            def enable_start_new_path(self):
+                ''' Enables a new path search setting
+                    the final_node_reached variable to
+                    false '''
+                self.final_node_reached = False
+
+            def setup_ant(self):
+                ''' Clears the list of visited nodes
+                    it stores the first one
+                    and selects the first one as initial'''
+                self.visited_nodes[1:] =[]
+                self.actual_node= self.start_pos
+
+        def __init__(self, in_map, no_ants, iterations, evaporation_factor,
+                     pheromone_adding_constant):
+            self.map = in_map
+            self.no_ants = no_ants
+            self.iterations = iterations
+            self.evaporation_factor = evaporation_factor
+            self.pheromone_adding_constant = pheromone_adding_constant
+            self.paths = []
+            self.ants = self.create_ants()
+            self.best_result = []
+
+        def create_ants(self):
+            ''' Creates a list containin the
+                total number of ants specified
+                in the initial node '''
+            ants = []
+            for i in range(self.no_ants):
+                ants.append(self.Ant(self.map.initial_node, self.map.final_node))
+            return ants
+
+        def select_next_node(self, actual_node):
+            ''' Randomly selects the next node
+                to visit '''
+
+            # Compute the total sumatory of the pheromone of each edge
+            total_sum = 0.0
+            for edge in actual_node.edges:
+                total_sum += edge['Pheromone']
+
+            # Calculate probability of each edge
+            prob = 0
+            edges_list = []
+            p = []
+            for edge in actual_node.edges:
+                prob = edge['Pheromone']/total_sum
+                edge['Probability'] = prob
+                edges_list.append(edge)
+                p.append(prob)
+
+            # Clear probability values
+            for edge in actual_node.edges:
+                edge['Probability'] = 0.0
+
+            # Return the node based on the probability of the solutions
+            return np.random.choice(edges_list,1, p)[0]['FinalNode']
+
+        def pheromone_update(self):
+            ''' Updates the pheromone level
+                of the each of the trails
+                and sorts the paths by lenght '''
+            # Sort the list according to the size of the lists
+            self.sort_paths()
+            for i, path in enumerate(self.paths):
+                for j, element in enumerate(path):
+                    for edge in self.map.nodes_array[element[0]][element[1]].edges:
+                        if (j+1) < len(path):
+                            if edge['FinalNode'] == path[j+1]:
+                                edge['Pheromone'] = (1.0 -
+                                                     self.evaporation_factor) * \
+                                edge['Pheromone'] + \
+                                self.pheromone_adding_constant/float(len(path))
+                            else:
+                                edge['Pheromone'] = (1.0 -
+                                                     self.evaporation_factor) * edge['Pheromone']
+        def empty_paths(self):
+            ''' Empty the list of paths '''
+            self.paths[:]
+
+        def sort_paths(self):
+            ''' Sorts the paths '''
+            self.paths.sort(key=len)
+
+        def add_to_path_results(self, in_path):
+            ''' Appends the path to
+                the results path list'''
+            self.paths.append(in_path)
+
+        def get_coincidence_indices(self,lst, element):
+            ''' Gets the indices of the coincidences
+                of elements in the path '''
+            result = []
+            offset = -1
+            while True:
+                try:
+                    offset = lst.index(element, offset+1)
+                except ValueError:
+                    return result
+                result.append(offset)
+
+        def delete_loops(self, in_path):
+            ''' Checks if there is a loop in the
+                resulting path and deletes it '''
+            res_path = list(in_path)
+            for element in res_path:
+                coincidences = self.get_coincidence_indices(res_path, element)
+                # reverse de list to delete elements from back to front of the list
+                coincidences.reverse()
+                for i,coincidence in enumerate(coincidences):
+                    if not i == len(coincidences)-1:
+                        res_path[coincidences[i+1]:coincidence] = []
+
+            return res_path
+
+        def calculate_path(self):
+            ''' Carries out the process to
+                get the best path '''
+            # Repeat the cicle for the specified no of times
+            for i in range(self.iterations):
+                for ant in self.ants:
+                    ant.setup_ant()
+                    while not ant.final_node_reached:
+                        # Randomly selection of the node to visit
+                        node_to_visit = self.select_next_node(self.map.nodes_array[int(ant.actual_node[0])][int(ant.actual_node[1])])
+
+                        # Move ant to the next node randomly selected
+                        ant.move_ant(node_to_visit)
+
+                        # Check if solution has been reached
+                        ant.is_final_node_reached()
+
+                    # Add the resulting path to the path list
+                    self.add_to_path_results(self.delete_loops(ant.get_visited_nodes()))
+
+                    # Enable the ant for a new search
+                    ant.enable_start_new_path()
+
+                # Update the global pheromone level
+                self.pheromone_update()
+                self.best_result = self.paths[0]
+                # Empty the list of paths
+                self.empty_paths()
+                print  ('Iteration: ',i, ' lenght of the path: ', len(self.best_result))
+            return self.best_result
+
+
+def create_map(posString='{ "start":[0,0], "1": [4,4], "2": [2,5], "3": [3,5], "4": [4,0], "5": [6,5], "6": [3,10], "7": [8,7],"end":[7,3]}'):
+
+        if posString != "":
+            obstacleDictionaryString = posString
+
+            # printing original string
+            print("The original string : " + str(obstacleDictionaryString))
+
+            obstacleDictionary = json.loads(obstacleDictionaryString)
+
+            for entry in obstacleDictionary.keys():
+                lupdated = list(map(round, obstacleDictionary.get(entry)))
+                obstacleDictionary[entry] = lupdated
+
+
+            # print result
+            print("The converted dictionary : " + str(obstacleDictionary))
+
+        initialRow = "E "
+
+        with open('newmap.txt', 'w') as f:
+
+            #f = open("maps/newmap.txt", "w")
+            initialRow = initialRow*16 + "\\n"
+            f.write(initialRow*16)
+
+            f.close()
+
+        """
+        xRight -5
+        xLeft 14
+        zTop -12
+        zBottom 7.5
+        """
+        with open('newmap.txt', 'r') as f:
+
+            #f = open("maps/newmap.txt", "r")
+            file = f.read()
+            print(file)
+            fileList = list(file)
+            print(fileList)
+
+            i = 0
+
+            for value in list(obstacleDictionary.values()):
+                if i == 0:
+                    fileList[value[0]*33 + value[1]*2] = 'S'
+                elif(i != len(obstacleDictionary)-1):
+                    fileList[value[0]*33  + value[1]*2] = 'O'
+
+                else:
+                    fileList[value[0]*33 + value[1]*2] = 'F'
+
+                print(i, value)
+                print("".join(fileList))
+
+                i += 1
+
+            f.close()
+
+        print("Updated:")
+        print("".join(fileList))
+
+        with open('newmap.txt', 'w') as f:
+
+            #f = open("maps/newmap.txt", "w")
+            f.write("".join(fileList))
+
+            f.close()
+
+ep = js.document.getElementById("elements").textContent;
+#'{ "start":[0.5,2.97], "1": [0,7], "2": [5,15], "3": [10,9], "4": [3,10], "5": [4,3], "6": [11,12], "7": [11,3],"end":[5,5]}'
+create_map(ep)
+no_of_ants, iterations, map_path, evap_rate, pher = 10, 10, "newmap.txt", 0.5, 1
+# Get the map
+Map= Map(map_path)
+Colony = AntColony(Map, no_of_ants, iterations, evap_rate, pher)
+path = Colony.calculate_path()
+print("Path:", path)
+
+js.document.getElementById("path").innerHTML = path
+
+def parse_text():
+        print("Path inside:", path)
+        js.document.getElementById("path").value = path
+Map.represent_path(path)
+                    `
+                pyodide.runPython(python_code)
+            })
+            self.parse_text = pyodide.globals.get("parse_text");
+
+        };
+
+        function getPath() {
+            main();
+        }
+    </script>
 </head>
 
 <body onload="brython()">
@@ -252,7 +680,17 @@
         <div class="arrow-container">
             <div class="set-button" id="getpath" onclick="setFinishPoint()">Get Path</div>
         </div>
+
+        <div id="output_text"></div><br />
+        <div id="path" onclick="getPath()">Path</div><br />
+        <img id="fig">
+
     </fieldset>
+
+
+
+
+
 
     <script>
 
@@ -270,7 +708,7 @@
     </script>
 
 
-    <script type="text/python">
+    <!--<script type="text/python">
 
         from browser import document
         from create_map import create_map
@@ -297,7 +735,7 @@
 
         #create_map(data)
 
-    </script>
+    </script>-->
 
 </body>
 
